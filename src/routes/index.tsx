@@ -192,45 +192,49 @@ function Spalanie() {
             }
           />
         </div>
-        <div id="outputs" className="mt-12">
-          <table id="table" className="border-separate border-spacing-x-5 ">
-            <tbody>
-              <tr>
-                <td>Spalanie na osobę: </td>
-                {results.spalaniePerOsoba !== undefined &&
-                !isNaN(results.spalaniePerOsoba) ? (
-                  <td>{results.spalaniePerOsoba.toFixed(3)} l/100km</td>
-                ) : (
-                  <td>brak</td>
-                )}
-              </tr>
-              <tr>
-                <td>Całość (bez osób): </td>
-                {results.caloscBez !== undefined &&
-                !isNaN(results.caloscBez) ? (
-                  <td>{results.caloscBez.toFixed(2)} zł</td>
-                ) : (
-                  <td>brak</td>
-                )}
-              </tr>
-              <tr>
-                <td>Całość (z osobami): </td>
-                {results.caloscZ !== undefined && !isNaN(results.caloscZ) ? (
-                  <td>{results.caloscZ.toFixed(2)} zł</td>
-                ) : (
-                  <td>brak</td>
-                )}
-              </tr>
-              <tr>
-                <td>Za osobę: </td>
-                {results.zaOsobe !== undefined && !isNaN(results.zaOsobe) ? (
-                  <td>{results.zaOsobe.toFixed(2)} zł</td>
-                ) : (
-                  <td>brak</td>
-                )}
-              </tr>
-            </tbody>
-          </table>
+        <div
+          id="outputs"
+          className="mt-12 grid grid-cols-2 grid-rows-2 w-full gap-4"
+        >
+          <div className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2">
+            <label>Spalanie na osobę</label>
+            <div>
+              <span className="font-bold text-3xl text-blue-300">
+                {results.spalaniePerOsoba?.toFixed(3) ?? 0}
+              </span>
+              <span className="ml-2 text-sm text-white/50">l/100km</span>
+            </div>
+          </div>
+
+          <div className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2">
+            <label>Całość (bez osób)</label>
+            <div>
+              <span className="font-bold text-3xl text-red-300">
+                {results.caloscBez?.toFixed(2) ?? 0}
+              </span>
+              <span className="ml-2 text-sm text-white/50">zł</span>
+            </div>
+          </div>
+
+          <div className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2">
+            <label>Całość (z osobami)</label>
+            <div>
+              <span className="font-bold text-3xl text-green-300">
+                {results.caloscZ?.toFixed(2) ?? 0}
+              </span>
+              <span className="ml-2 text-sm text-white/50">zł</span>
+            </div>
+          </div>
+
+          <div className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2">
+            <label>Za osobę</label>
+            <div>
+              <span className="font-bold text-3xl text-purple-300">
+                {results.zaOsobe?.toFixed(2) ?? 0}
+              </span>
+              <span className="ml-2 text-sm text-white/50">zł</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
