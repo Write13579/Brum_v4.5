@@ -2,21 +2,28 @@ import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { useEffect, useState } from "react";
 
+enum Theme {
+  DARK = "dark",
+  LIGHT = "light",
+}
+
+const TAILWIND_DARK_THEME_SELECTOR = "dark";
+
 export const Route = createRootRoute({
   component: () => {
-    const [changeTheme, setChangeTheme] = useState("dark");
+    const [changeTheme, setChangeTheme] = useState(Theme.DARK);
 
     useEffect(() => {
-      const old = localStorage.getItem("theme");
+      const old = localStorage.getItem("theme") as Theme | null;
 
-      setChangeTheme(old && old === "light" ? "light" : "dark");
+      setChangeTheme(old && old === Theme.LIGHT ? Theme.LIGHT : Theme.DARK);
 
-      if (!old || old === "dark") {
-        localStorage.setItem("theme", "dark");
-        document.documentElement.classList.add("dark");
+      if (!old || old === Theme.DARK) {
+        localStorage.setItem("theme", Theme.DARK);
+        document.documentElement.classList.add(TAILWIND_DARK_THEME_SELECTOR);
       } else {
-        localStorage.setItem("theme", "light");
-        document.documentElement.classList.add("remove");
+        localStorage.setItem("theme", Theme.LIGHT);
+        document.documentElement.classList.remove(TAILWIND_DARK_THEME_SELECTOR);
       }
     }, []);
 
@@ -35,19 +42,23 @@ export const Route = createRootRoute({
           <button
             className="ml-auto"
             onClick={() => {
-              const theme = localStorage.getItem("theme");
-              if (!theme || theme === "dark") {
-                localStorage.setItem("theme", "light");
-                document.documentElement.classList.remove("dark");
-                setChangeTheme("light");
+              const theme = localStorage.getItem("theme") as Theme | null;
+              if (!theme || theme === Theme.DARK) {
+                localStorage.setItem("theme", Theme.LIGHT);
+                document.documentElement.classList.remove(
+                  TAILWIND_DARK_THEME_SELECTOR
+                );
+                setChangeTheme(Theme.LIGHT);
               } else {
-                localStorage.setItem("theme", "dark");
-                document.documentElement.classList.add("dark");
-                setChangeTheme("dark");
+                localStorage.setItem("theme", Theme.DARK);
+                document.documentElement.classList.add(
+                  TAILWIND_DARK_THEME_SELECTOR
+                );
+                setChangeTheme(Theme.DARK);
               }
             }}
           >
-            {changeTheme === "light" ? "🌑" : "☀️"}
+            {changeTheme === Theme.LIGHT ? "🌑" : "☀️"}
           </button>
         </div>
         <hr />

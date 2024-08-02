@@ -196,45 +196,47 @@ function Spalanie() {
           id="outputs"
           className="mt-12 grid grid-cols-2 grid-rows-2 w-full gap-4"
         >
-          <div className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2">
-            <label>Spalanie na osobę</label>
-            <div>
-              <span className="font-bold text-3xl text-blue-300">
-                {results.spalaniePerOsoba?.toFixed(3) ?? 0}
-              </span>
-              <span className="ml-2 text-sm text-white/50">l/100km</span>
+          {[
+            {
+              label: "Spalanie na osobę",
+              value: results.spalaniePerOsoba?.toFixed(3) ?? 0,
+              unit: "l/100km",
+              color: "#93c5fd",
+            },
+            {
+              label: "Całość (bez osób)",
+              value: results.caloscBez?.toFixed(2) ?? 0,
+              unit: "zł",
+              color: "#fca5a5",
+            },
+            {
+              label: "Całość (z osobami)",
+              value: results.caloscZ?.toFixed(2) ?? 0,
+              unit: "zł",
+              color: "#86efac",
+            },
+            {
+              label: "Za osobę",
+              value: results.zaOsobe?.toFixed(2) ?? 0,
+              unit: "zł",
+              color: "#d8b4fe",
+            },
+          ].map((resultBock) => (
+            <div className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2">
+              <label>{resultBock.label}</label>
+              <div>
+                <span
+                  className="font-bold text-3xl"
+                  style={{ color: resultBock.color }}
+                >
+                  {resultBock.value}
+                </span>
+                <span className="ml-2 text-sm text-white/50">
+                  {resultBock.unit}
+                </span>
+              </div>
             </div>
-          </div>
-
-          <div className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2">
-            <label>Całość (bez osób)</label>
-            <div>
-              <span className="font-bold text-3xl text-red-300">
-                {results.caloscBez?.toFixed(2) ?? 0}
-              </span>
-              <span className="ml-2 text-sm text-white/50">zł</span>
-            </div>
-          </div>
-
-          <div className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2">
-            <label>Całość (z osobami)</label>
-            <div>
-              <span className="font-bold text-3xl text-green-300">
-                {results.caloscZ?.toFixed(2) ?? 0}
-              </span>
-              <span className="ml-2 text-sm text-white/50">zł</span>
-            </div>
-          </div>
-
-          <div className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2">
-            <label>Za osobę</label>
-            <div>
-              <span className="font-bold text-3xl text-purple-300">
-                {results.zaOsobe?.toFixed(2) ?? 0}
-              </span>
-              <span className="ml-2 text-sm text-white/50">zł</span>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>
