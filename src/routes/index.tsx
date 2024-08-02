@@ -3,10 +3,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import UnitInput from "../components/unit-input";
+import { clsx } from "clsx";
 
 export const Route = createFileRoute("/")({
   component: Spalanie,
 });
+
+enum PreserColor {
+  GREEN,
+  YELLOW,
+  RED,
+}
+const presetTablica = [
+  { label: "🚄", value: 6, color: PreserColor.GREEN },
+  { label: "🏙️", value: 7.2, color: PreserColor.YELLOW },
+  { label: "❄️", value: 8.5, color: PreserColor.RED },
+];
 
 function Spalanie() {
   type InputsType = {
@@ -51,12 +63,6 @@ function Spalanie() {
     });
   }, [inputs]);
 
-  const presetTablica = [
-    { label: "🚄", value: 6 },
-    { label: "🏙️", value: 7.2 },
-    { label: "❄️", value: 8.5 },
-  ];
-
   return (
     <div
       id="alles"
@@ -89,10 +95,22 @@ function Spalanie() {
                 onClick={() =>
                   setInputs((i) => ({ ...i, spalanie: element.value }))
                 }
-                className="border border-white/20 bg-white/10 rounded-md p-1 w-full text-[1.4rem] hover:bg-white/20 transition-colors"
+                className={clsx(
+                  "border rounded-md p-1 w-full text-[1.4rem] transition-colors group",
+                  {
+                    "bg-green-300/20 border-green-300/30 hover:bg-green-300/40":
+                      element.color === PreserColor.GREEN,
+                    "bg-yellow-300/20 border-yellow-300/30 hover:bg-yellow-300/40":
+                      element.color === PreserColor.YELLOW,
+                    "bg-red-300/20 border-red-300/30 hover:bg-red-300/40":
+                      element.color === PreserColor.RED,
+                  }
+                )}
                 key={element.value}
               >
-                {element.label}
+                <div className="group-active:skew-y-12 transition-transform">
+                  {element.label}
+                </div>
               </button>
             ))}
           </div>
@@ -124,7 +142,7 @@ function Spalanie() {
             }
           />
         </div>
-        <div id="osoby">
+        <div id="osoby" className="flex items-center gap-4">
           <UnitInput
             id="inpOsoby"
             unit={(() => {
@@ -141,6 +159,14 @@ function Spalanie() {
               setInputs((i) => ({ ...i, osoby: parseFloat(e.target.value) }))
             }
           />
+
+          <div className="flex items-center gap-2">
+            {Array.from({ length: inputs.osoby }).map((_, i) => (
+              <div key={i} className="animate-bounce">
+                👤
+              </div>
+            ))}
+          </div>
         </div>
         <div id="procent" className="flex items-center gap-4">
           <UnitInput
@@ -199,30 +225,41 @@ function Spalanie() {
           {[
             {
               label: "Spalanie na osobę",
-              value: results.spalaniePerOsoba?.toFixed(3) ?? 0,
+              value: !isNaN(results.spalaniePerOsoba ?? NaN)
+                ? results.spalaniePerOsoba!.toFixed(3)
+                : "0.000",
               unit: "l/100km",
               color: "#93c5fd",
             },
             {
               label: "Całość (bez osób)",
-              value: results.caloscBez?.toFixed(2) ?? 0,
+              value: !isNaN(results.caloscBez ?? NaN)
+                ? results.caloscBez!.toFixed(2)
+                : "0.00",
               unit: "zł",
               color: "#fca5a5",
             },
             {
               label: "Całość (z osobami)",
-              value: results.caloscZ?.toFixed(2) ?? 0,
+              value: !isNaN(results.caloscZ ?? NaN)
+                ? results.caloscZ!.toFixed(2)
+                : "0.00",
               unit: "zł",
               color: "#86efac",
             },
             {
               label: "Za osobę",
-              value: results.zaOsobe?.toFixed(2) ?? 0,
+              value: !isNaN(results.zaOsobe ?? NaN)
+                ? results.zaOsobe!.toFixed(2)
+                : "0.00",
               unit: "zł",
               color: "#d8b4fe",
             },
           ].map((resultBock) => (
-            <div className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2">
+            <div
+              key={resultBock.label}
+              className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2"
+            >
               <label>{resultBock.label}</label>
               <div>
                 <span
