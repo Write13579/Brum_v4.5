@@ -5,22 +5,24 @@ import { useEffect, useState } from "react";
 export const Route = createRootRoute({
   component: () => {
     const [changeTheme, setChangeTheme] = useState("dark");
+
     useEffect(() => {
       const old = localStorage.getItem("theme");
 
-      setChangeTheme(old && old === "light" ? "dark" : "light");
+      setChangeTheme(old && old === "light" ? "light" : "dark");
+
       if (!old || old === "dark") {
-        localStorage.setItem("theme", "light");
-        document.documentElement.classList.remove("dark");
-      } else {
         localStorage.setItem("theme", "dark");
         document.documentElement.classList.add("dark");
+      } else {
+        localStorage.setItem("theme", "light");
+        document.documentElement.classList.add("remove");
       }
     }, []);
 
     return (
       <>
-        <div className="flex items-center justify-between">
+        <div className="grid grid-cols-3 items-center p-4 w-full">
           <div className="p-2 flex gap-2 w-fit">
             <Link to="/" className="[&.active]:font-bold">
               Kalkulator
@@ -29,8 +31,9 @@ export const Route = createRootRoute({
               About
             </Link>
           </div>
-          <div>Brum v4.0</div>
+          <div className="w-full text-center font-bold text-xl">Brum v4.0</div>
           <button
+            className="ml-auto"
             onClick={() => {
               const theme = localStorage.getItem("theme");
               if (!theme || theme === "dark") {

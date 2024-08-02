@@ -2,6 +2,7 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import UnitInput from "../components/unit-input";
 
 export const Route = createFileRoute("/")({
   component: Spalanie,
@@ -61,14 +62,15 @@ function Spalanie() {
       id="alles"
       className="flex justify-center items-center flex-col bg-gray-800 dark:bg-white p-8"
     >
-      <div className="flex flex-col justify-center items-center gap-3 text-white">
-        <h1 className="font-bold text-4xl mb-8 drop-shadow-[0_0_10px_green] ">
+      <div className="flex flex-col justify-center items-start gap-3 text-white">
+        <h1 className="font-bold text-4xl mb-8 drop-shadow-[0_0_10px_green] text-center w-full">
           Kalkulator wycieczkowy
         </h1>
-        <div id="spalanie">
-          <label htmlFor="inpSpalanie">Średnie spalanie:</label>
-          <input
+        <div id="spalanie" className="flex flex-col gap-2">
+          <UnitInput
             id="inpSpalanie"
+            label="Średnie spalanie"
+            unit="l/100km"
             type="number"
             min="0"
             step="0.5"
@@ -77,15 +79,17 @@ function Spalanie() {
               setInputs((i) => ({ ...i, spalanie: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpSpalanie">l/100km</label>
-          <br />
-          <div id="emoji" className="flex justify-center mt-1">
+
+          <div
+            id="emoji"
+            className="flex justify-center mt-1 gap-2 items-center"
+          >
             {presetTablica.map((element) => (
               <button
                 onClick={() =>
                   setInputs((i) => ({ ...i, spalanie: element.value }))
                 }
-                className="border-2 p-1 w-full text-[1.4rem]"
+                className="border border-white/20 bg-white/10 rounded-md p-1 w-full text-[1.4rem] hover:bg-white/20 transition-colors"
                 key={element.value}
               >
                 {element.label}
@@ -94,9 +98,10 @@ function Spalanie() {
           </div>
         </div>
         <div id="cena">
-          <label htmlFor="inpCena">Cena paliwa:</label>
-          <input
+          <UnitInput
             id="inpCena"
+            unit="zł/l"
+            label="Cena paliwa"
             type="number"
             min="0"
             step="0.1"
@@ -105,12 +110,12 @@ function Spalanie() {
               setInputs((i) => ({ ...i, cena: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpCena">zł/l</label>
         </div>
         <div id="odleglosc">
-          <label htmlFor="inpOdleglosc">Odległość:</label>
-          <input
+          <UnitInput
             id="inpOdleglosc"
+            unit="km"
+            label="Odległość"
             type="number"
             min="0"
             value={inputs.odlegosc}
@@ -118,12 +123,16 @@ function Spalanie() {
               setInputs((i) => ({ ...i, odlegosc: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpOdleglosc">km</label>
         </div>
         <div id="osoby">
-          <label htmlFor="inpOsoby">Liczba osób:</label>
-          <input
+          <UnitInput
             id="inpOsoby"
+            unit={(() => {
+              if (inputs.osoby === 1) return "osoba";
+              if (inputs.osoby > 1 && inputs.osoby < 5) return "osoby";
+              return "osób";
+            })()}
+            label="Liczba osób"
             type="number"
             min="1"
             max="5"
@@ -132,12 +141,12 @@ function Spalanie() {
               setInputs((i) => ({ ...i, osoby: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpOsoby">osób</label>
         </div>
-        <div id="procent">
-          <label htmlFor="inpProcent">Procent za osobę:</label>
-          <input
+        <div id="procent" className="flex items-center gap-4">
+          <UnitInput
             id="inpProcent"
+            unit="%"
+            label="Procent za osobę"
             type="number"
             min="0"
             step="0.5"
@@ -146,18 +155,19 @@ function Spalanie() {
               setInputs((i) => ({ ...i, procent: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpProcent">%</label>
+
           <span className="group relative text-red-600 cursor-pointer">
             🛈
-            <span className="group-hover:opacity-100 opacity-0 absolute ml-1 bottom-0 transition-opacity text-white">
+            <span className="group-hover:opacity-100 opacity-0 absolute ml-1 bottom-0 transition-opacity text-black font-bold px-2 bg-white rounded-md">
               waga/10
             </span>
           </span>
         </div>
         <div id="parkingi">
-          <label htmlFor="inpParkingi">Parkingi:</label>
-          <input
+          <UnitInput
             id="inpParkingi"
+            unit="zł"
+            label="Parkingi"
             type="number"
             min="0"
             value={inputs.parkingi}
@@ -165,12 +175,12 @@ function Spalanie() {
               setInputs((i) => ({ ...i, parkingi: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpParkingi">zł</label>
         </div>
         <div id="autostrada">
-          <label htmlFor="inpAutostrada">Autostrada:</label>
-          <input
+          <UnitInput
             id="inpAutostrada"
+            unit="zł"
+            label="Autostrada"
             type="number"
             min="0"
             value={inputs.autostrada}
@@ -181,7 +191,6 @@ function Spalanie() {
               }))
             }
           />
-          <label htmlFor="inpAutostrada">zł</label>
         </div>
         <div id="outputs" className="mt-12">
           <table id="table" className="border-separate border-spacing-x-5 ">
