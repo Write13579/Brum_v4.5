@@ -2,10 +2,23 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import UnitInput from "../components/unit-input";
+import { clsx } from "clsx";
 
 export const Route = createFileRoute("/")({
   component: Spalanie,
 });
+
+enum PreserColor {
+  GREEN,
+  YELLOW,
+  RED,
+}
+const presetTablica = [
+  { label: "🚄", value: 6, color: PreserColor.GREEN },
+  { label: "🏙️", value: 7.2, color: PreserColor.YELLOW },
+  { label: "❄️", value: 8.5, color: PreserColor.RED },
+];
 
 function Spalanie() {
   type InputsType = {
@@ -50,25 +63,20 @@ function Spalanie() {
     });
   }, [inputs]);
 
-  const presetTablica = [
-    { label: "🚄", value: 6 },
-    { label: "🏙️", value: 7.2 },
-    { label: "❄️", value: 8.5 },
-  ];
-
   return (
     <div
       id="alles"
       className="flex justify-center items-center flex-col bg-gray-800 dark:bg-white p-8"
     >
-      <div className="flex flex-col justify-center items-center gap-3 text-white">
-        <h1 className="font-bold text-4xl mb-8 drop-shadow-[0_0_10px_green] ">
+      <div className="flex flex-col justify-center items-start gap-3 text-white">
+        <h1 className="font-bold text-4xl mb-8 drop-shadow-[0_0_10px_green] text-center w-full">
           Kalkulator wycieczkowy
         </h1>
-        <div id="spalanie">
-          <label htmlFor="inpSpalanie">Średnie spalanie:</label>
-          <input
+        <div id="spalanie" className="flex flex-col gap-2">
+          <UnitInput
             id="inpSpalanie"
+            label="Średnie spalanie"
+            unit="l/100km"
             type="number"
             min="0"
             step="0.5"
@@ -77,26 +85,41 @@ function Spalanie() {
               setInputs((i) => ({ ...i, spalanie: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpSpalanie">l/100km</label>
-          <br />
-          <div id="emoji" className="flex justify-center mt-1">
+
+          <div
+            id="emoji"
+            className="flex justify-center mt-1 gap-2 items-center"
+          >
             {presetTablica.map((element) => (
               <button
                 onClick={() =>
                   setInputs((i) => ({ ...i, spalanie: element.value }))
                 }
-                className="border-2 p-1 w-full text-[1.4rem]"
+                className={clsx(
+                  "border rounded-md p-1 w-full text-[1.4rem] transition-colors group",
+                  {
+                    "bg-green-300/20 border-green-300/30 hover:bg-green-300/40":
+                      element.color === PreserColor.GREEN,
+                    "bg-yellow-300/20 border-yellow-300/30 hover:bg-yellow-300/40":
+                      element.color === PreserColor.YELLOW,
+                    "bg-red-300/20 border-red-300/30 hover:bg-red-300/40":
+                      element.color === PreserColor.RED,
+                  }
+                )}
                 key={element.value}
               >
-                {element.label}
+                <div className="group-active:skew-y-12 transition-transform">
+                  {element.label}
+                </div>
               </button>
             ))}
           </div>
         </div>
         <div id="cena">
-          <label htmlFor="inpCena">Cena paliwa:</label>
-          <input
+          <UnitInput
             id="inpCena"
+            unit="zł/l"
+            label="Cena paliwa"
             type="number"
             min="0"
             step="0.1"
@@ -105,12 +128,12 @@ function Spalanie() {
               setInputs((i) => ({ ...i, cena: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpCena">zł/l</label>
         </div>
         <div id="odleglosc">
-          <label htmlFor="inpOdleglosc">Odległość:</label>
-          <input
+          <UnitInput
             id="inpOdleglosc"
+            unit="km"
+            label="Odległość"
             type="number"
             min="0"
             value={inputs.odlegosc}
@@ -118,12 +141,16 @@ function Spalanie() {
               setInputs((i) => ({ ...i, odlegosc: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpOdleglosc">km</label>
         </div>
-        <div id="osoby">
-          <label htmlFor="inpOsoby">Liczba osób:</label>
-          <input
+        <div id="osoby" className="flex items-center gap-4">
+          <UnitInput
             id="inpOsoby"
+            unit={(() => {
+              if (inputs.osoby === 1) return "osoba";
+              if (inputs.osoby > 1 && inputs.osoby < 5) return "osoby";
+              return "osób";
+            })()}
+            label="Liczba osób"
             type="number"
             min="1"
             max="5"
@@ -132,12 +159,20 @@ function Spalanie() {
               setInputs((i) => ({ ...i, osoby: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpOsoby">osób</label>
+
+          <div className="flex items-center gap-2">
+            {Array.from({ length: inputs.osoby }).map((_, i) => (
+              <div key={i} className="animate-bounce">
+                👤
+              </div>
+            ))}
+          </div>
         </div>
-        <div id="procent">
-          <label htmlFor="inpProcent">Procent za osobę:</label>
-          <input
+        <div id="procent" className="flex items-center gap-4">
+          <UnitInput
             id="inpProcent"
+            unit="%"
+            label="Procent za osobę"
             type="number"
             min="0"
             step="0.5"
@@ -146,18 +181,19 @@ function Spalanie() {
               setInputs((i) => ({ ...i, procent: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpProcent">%</label>
+
           <span className="group relative text-red-600 cursor-pointer">
             🛈
-            <span className="group-hover:opacity-100 opacity-0 absolute ml-1 bottom-0 transition-opacity text-white">
+            <span className="group-hover:opacity-100 opacity-0 absolute ml-1 bottom-0 transition-opacity text-black font-bold px-2 bg-white rounded-md">
               waga/10
             </span>
           </span>
         </div>
         <div id="parkingi">
-          <label htmlFor="inpParkingi">Parkingi:</label>
-          <input
+          <UnitInput
             id="inpParkingi"
+            unit="zł"
+            label="Parkingi"
             type="number"
             min="0"
             value={inputs.parkingi}
@@ -165,12 +201,12 @@ function Spalanie() {
               setInputs((i) => ({ ...i, parkingi: parseFloat(e.target.value) }))
             }
           />
-          <label htmlFor="inpParkingi">zł</label>
         </div>
         <div id="autostrada">
-          <label htmlFor="inpAutostrada">Autostrada:</label>
-          <input
+          <UnitInput
             id="inpAutostrada"
+            unit="zł"
+            label="Autostrada"
             type="number"
             min="0"
             value={inputs.autostrada}
@@ -181,47 +217,63 @@ function Spalanie() {
               }))
             }
           />
-          <label htmlFor="inpAutostrada">zł</label>
         </div>
-        <div id="outputs" className="mt-12">
-          <table id="table" className="border-separate border-spacing-x-5 ">
-            <tbody>
-              <tr>
-                <td>Spalanie na osobę: </td>
-                {results.spalaniePerOsoba !== undefined &&
-                !isNaN(results.spalaniePerOsoba) ? (
-                  <td>{results.spalaniePerOsoba.toFixed(3)} l/100km</td>
-                ) : (
-                  <td>brak</td>
-                )}
-              </tr>
-              <tr>
-                <td>Całość (bez osób): </td>
-                {results.caloscBez !== undefined &&
-                !isNaN(results.caloscBez) ? (
-                  <td>{results.caloscBez.toFixed(2)} zł</td>
-                ) : (
-                  <td>brak</td>
-                )}
-              </tr>
-              <tr>
-                <td>Całość (z osobami): </td>
-                {results.caloscZ !== undefined && !isNaN(results.caloscZ) ? (
-                  <td>{results.caloscZ.toFixed(2)} zł</td>
-                ) : (
-                  <td>brak</td>
-                )}
-              </tr>
-              <tr>
-                <td>Za osobę: </td>
-                {results.zaOsobe !== undefined && !isNaN(results.zaOsobe) ? (
-                  <td>{results.zaOsobe.toFixed(2)} zł</td>
-                ) : (
-                  <td>brak</td>
-                )}
-              </tr>
-            </tbody>
-          </table>
+        <div
+          id="outputs"
+          className="mt-12 grid grid-cols-2 grid-rows-2 w-full gap-4"
+        >
+          {[
+            {
+              label: "Spalanie na osobę",
+              value: !isNaN(results.spalaniePerOsoba ?? NaN)
+                ? results.spalaniePerOsoba!.toFixed(3)
+                : "0.000",
+              unit: "l/100km",
+              color: "#93c5fd",
+            },
+            {
+              label: "Całość (bez osób)",
+              value: !isNaN(results.caloscBez ?? NaN)
+                ? results.caloscBez!.toFixed(2)
+                : "0.00",
+              unit: "zł",
+              color: "#fca5a5",
+            },
+            {
+              label: "Całość (z osobami)",
+              value: !isNaN(results.caloscZ ?? NaN)
+                ? results.caloscZ!.toFixed(2)
+                : "0.00",
+              unit: "zł",
+              color: "#86efac",
+            },
+            {
+              label: "Za osobę",
+              value: !isNaN(results.zaOsobe ?? NaN)
+                ? results.zaOsobe!.toFixed(2)
+                : "0.00",
+              unit: "zł",
+              color: "#d8b4fe",
+            },
+          ].map((resultBock) => (
+            <div
+              key={resultBock.label}
+              className="bg-white/10 rounded-md w-full h-full flex flex-col items-start justify-center p-4 gap-2"
+            >
+              <label>{resultBock.label}</label>
+              <div>
+                <span
+                  className="font-bold text-3xl"
+                  style={{ color: resultBock.color }}
+                >
+                  {resultBock.value}
+                </span>
+                <span className="ml-2 text-sm text-white/50">
+                  {resultBock.unit}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
