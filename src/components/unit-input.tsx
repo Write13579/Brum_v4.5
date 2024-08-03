@@ -1,15 +1,19 @@
+type OriginalInputHTMLProps = React.DetailedHTMLProps<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>;
+
+type MyInputProps = {
+  id: string;
+  unit: string;
+  label?: string;
+};
+  
 const UnitInput = ({
   unit,
   label,
   ...props
-}: React.DetailedHTMLProps<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
-> & {
-  id: string;
-  unit: string;
-  label?: string;
-}) => {
+}: OriginalInputHTMLProps & MyInputProps) => {
   return (
     <div className="flex flex-row items-center justify-center gap-2 group relative">
       {label && (
