@@ -162,7 +162,7 @@ function Zapisy() {
           {wyniki.map((wynik, idx) => (
             <div
               key={idx}
-              className="bg-white/10 p-8 pl-16 grid grid-cols-3 items-center gap-1"
+              className="bg-white/10 p-8 px-10 grid grid-cols-3 items-center gap-1"
             >
               {Object.entries(wynik).map((item) => (
                 <>
@@ -170,7 +170,12 @@ function Zapisy() {
                   <span>
                     {!isDate(item[1])
                       ? item[1]
-                      : item[1].toISOString().substring(0, 10)}
+                      : item[1]
+                          .toISOString()
+                          .substring(0, 10)
+                          .split("-")
+                          .reverse()
+                          .join("-")}
                   </span>
                   <span>
                     {
@@ -183,32 +188,34 @@ function Zapisy() {
                   </span>
                 </>
               ))}
-              <button
-                key={idx}
-                onClick={() => {
-                  if (textButtons[idx] === "usuń") {
-                    setTextButtons((teksty) =>
-                      teksty.map((tekst, index) =>
-                        index === idx ? "na pewno?" : tekst
-                      )
-                    );
-                    const x = setTimeout(() => {
+              <div id="usunBtn" className="flex col-span-3 justify-center">
+                <button
+                  key={idx}
+                  onClick={() => {
+                    if (textButtons[idx] === "usuń") {
                       setTextButtons((teksty) =>
                         teksty.map((tekst, index) =>
-                          index === idx ? "usuń" : tekst
+                          index === idx ? "na pewno?" : tekst
                         )
                       );
-                    }, 2000);
-                    //return () => clearTimeout(x);
-                  }
-                  if (textButtons[idx] === "na pewno?") {
-                    usun(idx);
-                  }
-                }}
-                className="mt-6 border-2 border-red-500 px-3 py-2 rounded-lg bg-red-500/60 font-bold active:bg-red-500/80 hover:shadow-[0_0_10px_1px] hover:shadow-red-500"
-              >
-                {textButtons[idx]}
-              </button>
+                      const x = setTimeout(() => {
+                        setTextButtons((teksty) =>
+                          teksty.map((tekst, index) =>
+                            index === idx ? "usuń" : tekst
+                          )
+                        );
+                      }, 2000);
+                      //return () => clearTimeout(x);
+                    }
+                    if (textButtons[idx] === "na pewno?") {
+                      usun(idx);
+                    }
+                  }}
+                  className="mt-6 border-2 border-red-500 px-4 py-2 rounded-lg bg-red-500/60 font-bold active:bg-red-500/80 hover:shadow-[0_0_10px_1px] hover:shadow-red-500"
+                >
+                  {textButtons[idx]}
+                </button>
+              </div>
             </div>
           ))}
         </div>
