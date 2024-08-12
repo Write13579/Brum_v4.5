@@ -56,6 +56,8 @@ function Zapisy() {
   const [wyniki, setWyniki] = useState<wynikiType[]>([]);
 
   function dodaj() {
+    setTextButtons((t) => [...t, "usuń"]);
+
     if (inputyTablica.every((element) => element != 0 && !isNaN(element))) {
       const nowyZapis: wynikiType = {
         ...inputy,
@@ -69,10 +71,12 @@ function Zapisy() {
   }
 
   function usun(index: number) {
+    setTextButtons(textButtons.filter((_, itemIDX) => itemIDX !== index));
     setWyniki(wyniki.filter((_, itemIDX) => itemIDX !== index));
   }
-  const isDate = (value: any): value is Date =>
-    value instanceof Date && !isNaN(value.getTime());
+
+  const [textButtons, setTextButtons] = useState<string[]>(["usuń"]);
+
   return (
     <div
       id="alles"
@@ -151,26 +155,15 @@ function Zapisy() {
           Dodaj
         </button>
         <div id="wyniki" className="flex flex-col gap-8">
+          {/* SORTOWANIE WG WYBRANEGO ELEMENTU */}
           {wyniki.map((wynik, idx) => (
             <div
               key={idx}
-              className="bg-white/10 p-10 flex flex-col items-center gap-1"
+              className="bg-white/10 p-8 flex flex-col items-center gap-1"
             >
-              {Object.entries(wynik).map((item) => (
-                <div>
-                  <label>{item[0]}:</label>
-                  <span>
-                    {!isDate(item[1])
-                      ? item[1]
-                      : item[1].toISOString().substring(0, 10)}
-                  </span>
-                </div>
-              ))}
-
-              {/* <div>
+              <div>
                 <label>Data: </label>
                 <span>{wynik.data.toISOString().substring(0, 10)}</span>
-                <span>{units.data}</span>
               </div>
               <div>
                 <label>Licznik: </label>
@@ -196,8 +189,33 @@ function Zapisy() {
                 <label>Spalanie: </label>
                 <span>{wynik.spalanieNaSto}</span>
                 <span>{units.spalanie}</span>
-              </div> */}
-              <button onClick={() => usun(idx)}>usun</button>
+              </div>
+              <button
+                key={idx}
+                onClick={() => {
+                  if (textButtons[idx] === "usuń") {
+                    setTextButtons((teksty) =>
+                      teksty.map((tekst, index) =>
+                        index === idx ? "na pewno?" : tekst
+                      )
+                    );
+                    const x = setTimeout(() => {
+                      setTextButtons((teksty) =>
+                        teksty.map((tekst, index) =>
+                          index === idx ? "usuń" : tekst
+                        )
+                      );
+                    }, 2000);
+                    //return () => clearTimeout(x);
+                  }
+                  if (textButtons[idx] === "na pewno?") {
+                    usun(idx);
+                  }
+                }}
+                className="mt-6 border-2 border-red-500 px-3 py-2 rounded-lg bg-red-500/60 font-bold active:bg-red-500/80 hover:shadow-[0_0_10px_1px] hover:shadow-red-500"
+              >
+                {textButtons[idx]}
+              </button>
             </div>
           ))}
         </div>

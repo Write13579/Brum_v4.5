@@ -12,7 +12,6 @@ const UnitInput = ({
   unit?: string;
   label?: string;
 }) => {
-  //xd
   return (
     <div className="flex flex-row items-center justify-center gap-2 group relative">
       {label && (
