@@ -34,11 +34,11 @@ export const Route = createRootRoute({
             <Link to="/" className="[&.active]:font-bold">
               Kalkulator
             </Link>{" "}
-            <Link to="/licz" className="[&.active]:font-bold">
-              About
+            <Link to="/zapisy" className="[&.active]:font-bold">
+              Zapisy
             </Link>
           </div>
-          <div className="w-full text-center font-bold text-xl">Brum v4.0</div>
+          <div className="w-full text-center font-bold text-xl">Brum v4.5</div>
           <button
             className="ml-auto"
             onClick={() => {

@@ -11,13 +11,13 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LiczImport } from './routes/licz'
+import { Route as ZapisyImport } from './routes/zapisy'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
-const LiczRoute = LiczImport.update({
-  path: '/licz',
+const ZapisyRoute = ZapisyImport.update({
+  path: '/zapisy',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -37,11 +37,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/licz': {
-      id: '/licz'
-      path: '/licz'
-      fullPath: '/licz'
-      preLoaderRoute: typeof LiczImport
+    '/zapisy': {
+      id: '/zapisy'
+      path: '/zapisy'
+      fullPath: '/zapisy'
+      preLoaderRoute: typeof ZapisyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -49,7 +49,7 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({ IndexRoute, LiczRoute })
+export const routeTree = rootRoute.addChildren({ IndexRoute, ZapisyRoute })
 
 /* prettier-ignore-end */
 
@@ -60,14 +60,14 @@ export const routeTree = rootRoute.addChildren({ IndexRoute, LiczRoute })
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/licz"
+        "/zapisy"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/licz": {
-      "filePath": "licz.tsx"
+    "/zapisy": {
+      "filePath": "zapisy.tsx"
     }
   }
 }

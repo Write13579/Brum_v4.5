@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 const UnitInput = ({
   unit,
   label,
@@ -7,7 +9,7 @@ const UnitInput = ({
   HTMLInputElement
 > & {
   id: string;
-  unit: string;
+  unit?: string;
   label?: string;
 }) => {
   return (
@@ -23,12 +25,17 @@ const UnitInput = ({
 
       <div className="flex items-center">
         <input
-          className="bg-white/10 text-white px-4 h-8 rounded-l-md"
+          className={clsx(
+            "bg-white/10 text-white px-4 h-8",
+            unit ? "rounded-l-md" : "rounded-md"
+          )}
           {...props}
         />
-        <div className="bg-white/20 text-white font-bold h-8 flex justify-center items-center px-4 rounded-r-md">
-          {unit}
-        </div>
+        {unit && (
+          <div className="bg-white/20 text-white font-bold h-8 flex justify-center items-center px-4 rounded-r-md">
+            {unit}
+          </div>
+        )}
       </div>
     </div>
   );

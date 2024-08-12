@@ -69,7 +69,7 @@ function Spalanie() {
       className="flex justify-center items-center flex-col bg-gray-800 dark:bg-white p-8"
     >
       <div className="flex flex-col justify-center items-start gap-3 text-white">
-        <h1 className="font-bold text-4xl mb-8 drop-shadow-[0_0_10px_green] text-center w-full">
+        <h1 className="font-bold text-4xl mb-8 drop-shadow-[0_0_10px_green] text-center w-full animate-Shake">
           Kalkulator wycieczkowy
         </h1>
         <div id="spalanie" className="flex flex-col gap-2">
