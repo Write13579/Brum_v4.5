@@ -8,49 +8,49 @@ export const Route = createFileRoute("/zapisy")({
 
 function Zapisy() {
   type InputyType = {
-    data: Date;
-    licznik: number;
-    paliwo: number;
-    platnosc: number;
-    cenaZaLitr: number;
+    Data: Date;
+    Licznik: number;
+    Paliwo: number;
+    Płatność: number;
+    CenaPaliwa: number;
   };
 
   const units = {
-    data: "r.",
-    licznik: "km",
-    paliwo: "l",
-    platnosc: "zł",
-    cenaZaLitr: "zł",
-    spalanie: "l/100km",
+    Data: "r.",
+    Licznik: "km",
+    Paliwo: "l",
+    Płatność: "zł",
+    CenaPaliwa: "zł/l",
+    Spalanie: "l/100km",
   };
 
   const [inputy, setInputy] = useState<InputyType>({
-    data: new Date(),
-    licznik: 0.0,
-    paliwo: 0.0,
-    platnosc: 0.0,
-    cenaZaLitr: 0.0,
+    Data: new Date(),
+    Licznik: 0.0,
+    Paliwo: 0.0,
+    Płatność: 0.0,
+    CenaPaliwa: 0.0,
   });
 
   let inputyTablica = [
-    inputy.licznik,
-    inputy.paliwo,
-    inputy.platnosc,
-    inputy.cenaZaLitr,
+    inputy.Licznik,
+    inputy.Paliwo,
+    inputy.Płatność,
+    inputy.CenaPaliwa,
   ];
 
   useEffect(() => {
-    if (inputy.paliwo !== 0 && inputy.platnosc !== 0) {
+    if (inputy.Paliwo !== 0 && inputy.Płatność !== 0) {
       setInputy((i) => ({
         ...i,
-        cenaZaLitr: parseFloat((i.platnosc / i.paliwo).toFixed(2)),
+        CenaPaliwa: parseFloat((i.Płatność / i.Paliwo).toFixed(2)),
       }));
     }
-  }, [inputy.paliwo, inputy.platnosc]);
+  }, [inputy.Paliwo, inputy.Płatność]);
 
   //dodawanie wynikow
   type wynikiType = InputyType & {
-    spalanieNaSto: number;
+    Spalanie: number;
   };
 
   const [wyniki, setWyniki] = useState<wynikiType[]>([]);
@@ -61,8 +61,8 @@ function Zapisy() {
     if (inputyTablica.every((element) => element != 0 && !isNaN(element))) {
       const nowyZapis: wynikiType = {
         ...inputy,
-        spalanieNaSto: parseFloat(
-          ((inputy.paliwo / inputy.licznik) * 100).toFixed(3)
+        Spalanie: parseFloat(
+          ((inputy.Paliwo / inputy.Licznik) * 100).toFixed(3)
         ),
       };
 
@@ -77,6 +77,9 @@ function Zapisy() {
 
   const [textButtons, setTextButtons] = useState<string[]>(["usuń"]);
 
+  const isDate = (value: unknown): value is Date =>
+    value instanceof Date && !isNaN(value.getTime());
+
   return (
     <div
       id="alles"
@@ -88,12 +91,12 @@ function Zapisy() {
         </h1>
         <div id="inputy" className="flex items-start flex-col gap-4">
           <UnitInput
-            id="data"
+            id="Data"
             label="Data"
             type="date"
-            value={inputy.data.toISOString().substring(0, 10)}
+            value={inputy.Data.toISOString().substring(0, 10)}
             onChange={(e) =>
-              setInputy((i) => ({ ...i, data: new Date(e.target.value) }))
+              setInputy((i) => ({ ...i, Data: new Date(e.target.value) }))
             }
           />
           <UnitInput
@@ -102,33 +105,33 @@ function Zapisy() {
             type="number"
             unit="km"
             min={0}
-            value={inputy.licznik}
+            value={inputy.Licznik}
             onChange={(e) =>
-              setInputy((i) => ({ ...i, licznik: parseFloat(e.target.value) }))
+              setInputy((i) => ({ ...i, Licznik: parseFloat(e.target.value) }))
             }
           />
           <UnitInput
-            id="paliwo_w_litrach"
+            id="Paliwo_w_litrach"
             label="Paliwo"
             type="number"
             unit="l"
             min={0}
-            value={inputy.paliwo}
+            value={inputy.Paliwo}
             onChange={(e) =>
-              setInputy((i) => ({ ...i, paliwo: parseFloat(e.target.value) }))
+              setInputy((i) => ({ ...i, Paliwo: parseFloat(e.target.value) }))
             }
           />
           <UnitInput
-            id="platnosc"
+            id="Płatność"
             label="Płatność"
             type="number"
             unit="zł"
             min={0}
-            value={inputy.platnosc}
+            value={inputy.Płatność}
             onChange={(e) =>
               setInputy((i) => ({
                 ...i,
-                platnosc: parseFloat(e.target.value),
+                Płatność: parseFloat(e.target.value),
               }))
             }
           />
@@ -139,11 +142,11 @@ function Zapisy() {
             unit="zł/l"
             min={0}
             step={0.01}
-            value={inputy.cenaZaLitr}
+            value={inputy.CenaPaliwa}
             onChange={(e) =>
               setInputy((i) => ({
                 ...i,
-                cenaZaLitr: parseFloat(e.target.value),
+                CenaPaliwa: parseFloat(e.target.value),
               }))
             }
           />
@@ -159,37 +162,27 @@ function Zapisy() {
           {wyniki.map((wynik, idx) => (
             <div
               key={idx}
-              className="bg-white/10 p-8 flex flex-col items-center gap-1"
+              className="bg-white/10 p-8 pl-16 grid grid-cols-3 items-center gap-1"
             >
-              <div>
-                <label>Data: </label>
-                <span>{wynik.data.toISOString().substring(0, 10)}</span>
-              </div>
-              <div>
-                <label>Licznik: </label>
-                <span>{wynik.licznik}</span>
-                <span>{units.licznik}</span>
-              </div>
-              <div>
-                <label>Paliwo: </label>
-                <span>{wynik.paliwo}</span>
-                <span>{units.paliwo}</span>
-              </div>
-              <div>
-                <label>Płatność: </label>
-                <span>{wynik.platnosc}</span>
-                <span>{units.platnosc}</span>
-              </div>
-              <div>
-                <label>Cena paliwa: </label>
-                <span>{wynik.cenaZaLitr}</span>
-                <span>{units.cenaZaLitr}</span>
-              </div>
-              <div>
-                <label>Spalanie: </label>
-                <span>{wynik.spalanieNaSto}</span>
-                <span>{units.spalanie}</span>
-              </div>
+              {Object.entries(wynik).map((item) => (
+                <>
+                  <label>{item[0]}:</label>
+                  <span>
+                    {!isDate(item[1])
+                      ? item[1]
+                      : item[1].toISOString().substring(0, 10)}
+                  </span>
+                  <span>
+                    {
+                      units[
+                        item[0] === "Spalanie"
+                          ? "Spalanie"
+                          : (item[0] as keyof typeof units)
+                      ]
+                    }
+                  </span>
+                </>
+              ))}
               <button
                 key={idx}
                 onClick={() => {
